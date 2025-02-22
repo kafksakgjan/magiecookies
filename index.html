@@ -119,7 +119,7 @@
     }
 
     // Kirim data ke Google Sheets
-   document.getElementById('pesananForm').addEventListener('submit', async (e) => {
+ document.getElementById('pesananForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const data = {
@@ -132,10 +132,11 @@
   };
 
   try {
-    const url = 'https://script.google.com/macros/s/AKfycbxTQfseW6nufG9gndjLEgw9GQrDrlT4pxBfcXsWILE4RriAuNgRga5qOu8c9EPaZseX/exec'; // Ganti dengan URL Web App Anda
-    const params = new URLSearchParams(data).toString();
-    const response = await fetch(`${url}?${params}`, {
-      method: 'GET', // Menggunakan GET karena CORS tidak mendukung POST
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL Proxy
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxTQfseW6nufG9gndjLEgw9GQrDrlT4pxBfcXsWILE4RriAuNgRga5qOu8c9EPaZseX/exec'; // URL Web App Anda
+    const response = await fetch(proxyUrl + scriptUrl, {
+      method: 'POST',
+      body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
     });
     const result = await response.json();
@@ -144,7 +145,7 @@
     document.getElementById('harga').value = '';
     document.getElementById('totalHarga').value = '';
   } catch (error) {
-    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+    alert('Terjadi kesalahan saat mengirim data.');
   }
 });
   </script>
