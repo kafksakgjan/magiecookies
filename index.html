@@ -132,10 +132,11 @@
   };
 
   try {
-    const url = 'https://script.google.com/macros/s/AKfycbzK-MBHY5l2-GkMI9RNeiswbsCFOz3npFWo1j8NooDJnBY6mDsy6MxZMMOUMPpb6ccq/exec'; // Ganti dengan URL Web App Anda
-    const params = new URLSearchParams(data).toString();
-    const response = await fetch(`${url}?${params}`, {
-      method: 'GET', // Menggunakan GET karena CORS tidak mendukung POST
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL Proxy
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzsrhkjQnDY0tsrygxWdnDnCZPcwnFo4AEPtIeAgNwvrexJd-wla2ZjwTr_6Z-77Qsx/exec'; // URL Web App Anda
+    const response = await fetch(proxyUrl + scriptUrl, {
+      method: 'POST',
+      body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
     });
     const result = await response.json();
