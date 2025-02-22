@@ -132,7 +132,7 @@
   };
 
   try {
-    const url = 'URL_GOOGLE_APPS_SCRIPT'; // Ganti dengan URL Web App Anda
+    const url = 'https://script.google.com/macros/s/AKfycbzK-MBHY5l2-GkMI9RNeiswbsCFOz3npFWo1j8NooDJnBY6mDsy6MxZMMOUMPpb6ccq/exec'; // Ganti dengan URL Web App Anda
     const params = new URLSearchParams(data).toString();
     const response = await fetch(`${url}?${params}`, {
       method: 'GET', // Menggunakan GET karena CORS tidak mendukung POST
