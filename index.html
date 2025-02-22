@@ -119,35 +119,34 @@
     }
 
     // Kirim data ke Google Sheets
- document.getElementById('pesananForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+    document.getElementById('pesananForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-  const data = {
-    namaPemesan: document.getElementById('namaPemesan').value,
-    varian: document.getElementById('varian').value,
-    ukuran: document.getElementById('ukuran').value,
-    jumlah: document.getElementById('jumlah').value,
-    harga: parseInt(document.getElementById('harga').value.replace(/\D/g, '')),
-    totalHarga: parseInt(document.getElementById('totalHarga').value.replace(/\D/g, ''))
-  };
+      const data = {
+        namaPemesan: document.getElementById('namaPemesan').value,
+        varian: document.getElementById('varian').value,
+        ukuran: ukuranSelect.value,
+        jumlah: jumlahInput.value,
+        harga: parseInt(hargaInput.value.replace(/\D/g, '')),
+        totalHarga: parseInt(totalHargaInput.value.replace(/\D/g, ''))
+      };
 
-  try {
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL Proxy
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxTQfseW6nufG9gndjLEgw9GQrDrlT4pxBfcXsWILE4RriAuNgRga5qOu8c9EPaZseX/exec'; // URL Web App Anda
-    const response = await fetch(proxyUrl + scriptUrl, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
+      try {
+        const url = 'https://script.google.com/macros/s/AKfycbzKiQgKf84ZwMeqHf9SqOJqN6_xA_OzIboO0Duy_2U/dev'; // Ganti dengan URL Web App Anda
+        const params = new URLSearchParams(data).toString();
+        const response = await fetch(`${url}?${params}`, {
+          method: 'GET', // Menggunakan GET karena CORS tidak mendukung POST
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await response.json();
+        alert(result.message);
+        document.getElementById('pesananForm').reset();
+        hargaInput.value = '';
+        totalHargaInput.value = '';
+      } catch (error) {
+        alert('Terjadi kesalahan saat mengirim data.');
+      }
     });
-    const result = await response.json();
-    alert(result.message);
-    document.getElementById('pesananForm').reset();
-    document.getElementById('harga').value = '';
-    document.getElementById('totalHarga').value = '';
-  } catch (error) {
-    alert('Terjadi kesalahan saat mengirim data.');
-  }
-});
   </script>
 </body>
 </html>
