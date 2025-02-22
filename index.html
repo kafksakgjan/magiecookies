@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magie Cookies - Pesan Kue</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #d9534f;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Magie Cookies - Pesan Kue</h1>
+  <form id="pesananForm">
+    <label for="namaPemesan">Nama Pemesan:</label>
+    <input type="text" id="namaPemesan" required>
+
+    <label for="varian">Varian Kue:</label>
+    <select id="varian" required>
+      <option value="Nastar">Nastar</option>
+      <option value="Kastengel">Kastengel</option>
+      <option value="Sagu Keju">Sagu Keju</option>
+      <option value="Putri Salju">Putri Salju</option>
+      <option value="Lidah Kucing">Lidah Kucing</option>
+      <option value="Choco">Choco</option>
+      <option value="Thumbprint">Thumbprint</option>
+    </select>
+
+    <label for="ukuran">Ukuran:</label>
+    <select id="ukuran" required>
+      <option value="Large">Large (Rp 60,000)</option>
+      <option value="Medium">Medium (Rp 40,000)</option>
+      <option value="Small">Small (Rp 25,000)</option>
+    </select>
+
+    <label for="jumlah">Jumlah:</label>
+    <input type="number" id="jumlah" min="1" required>
+
+    <label for="harga">Harga:</label>
+    <input type="text" id="harga" readonly>
+
+    <label for="totalHarga">Total Harga:</label>
+    <input type="text" id="totalHarga" readonly>
+
+    <button type="submit">Submit Pesanan</button>
+  </form>
+
+  <script>
+    const ukuranSelect = document.getElementById('ukuran');
+    const jumlahInput = document.getElementById('jumlah');
+    const hargaInput = document.getElementById('harga');
+    const totalHargaInput = document.getElementById('totalHarga');
+
+    // Fungsi untuk menghitung harga berdasarkan ukuran
+    ukuranSelect.addEventListener('change', () => {
+      const ukuran = ukuranSelect.value;
+      let harga = 0;
+      switch (ukuran) {
+        case 'Large':
+          harga = 60000;
+          break;
+        case 'Medium':
+          harga = 40000;
+          break;
+        case 'Small':
+          harga = 25000;
+          break;
+      }
+      hargaInput.value = `Rp ${harga.toLocaleString()}`;
+      hitungTotalHarga();
+    });
+
+    // Fungsi untuk menghitung total harga
+    jumlahInput.addEventListener('input', () => {
+      hitungTotalHarga();
+    });
+
+    function hitungTotalHarga() {
+      const harga = parseInt(hargaInput.value.replace(/\D/g, '')) || 0;
+      const jumlah = parseInt(jumlahInput.value) || 0;
+      const totalHarga = harga * jumlah;
+      totalHargaInput.value = `Rp ${totalHarga.toLocaleString()}`;
+    }
+
+    // Fungsi untuk mengirim data ke Google Sheets
+    document.getElementById('pesananForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const data = {
+    namaPemesan: document.getElementById('namaPemesan').value,
+    varian: document.getElementById('varian').value,
+    ukuran: document.getElementById('ukuran').value,
+    jumlah: document.getElementById('jumlah').value,
+    harga: parseInt(document.getElementById('harga').value.replace(/\D/g, '')),
+    totalHarga: parseInt(document.getElementById('totalHarga').value.replace(/\D/g, ''))
+  };
+
+  try {
+    const url = 'https://script.google.com/macros/s/AKfycbz-Kz5CI2xSLSvinvf1_xfrc4P05q7id9JkVtEh7yqmZgKofzLbpjCMK_T2mf9md-md/exec'; // Ganti dengan URL Web App Anda
+    const params = new URLSearchParams(data).toString();
+    const response = await fetch(`${url}?${params}`, {
+      method: 'GET', // Menggunakan GET karena CORS tidak mendukung POST
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const result = await response.json();
+    alert(result.message);
+    document.getElementById('pesananForm').reset();
+    document.getElementById('harga').value = '';
+    document.getElementById('totalHarga').value = '';
+  } catch (error) {
+    alert('Terjadi kesalahan saat mengirim data.');
+  }
+});
+  </script>
+</body>
+</html>
